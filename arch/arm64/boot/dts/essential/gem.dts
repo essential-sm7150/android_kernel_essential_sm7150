@@ -7,3 +7,13 @@
 &dfps_data_memory {
 	reg = <0x00 0x9d700000 0x00 0x100000>;
 };
+
+&soc {
+	qfprom: qfprom@0x780000 {
+		#address-cells = <0x01>;
+		#size-cells = <0x01>;
+		compatible = "qcom,qfprom";
+		ranges;
+		reg = <0x780000 0x1000>;
+	};
+};
