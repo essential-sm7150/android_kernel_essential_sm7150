@@ -22,6 +22,17 @@
 	};
 };
 
+&firmware {
+	android {
+		boot_devices = "soc/1d84000.ufshc";
+		fstab {
+			vendor {
+				status = "disabled";
+			};
+		};
+	};
+};
+
 &qupv3_se7_i2c {
 	qcom,i2c-touch-active = "synaptics,dsx-i2c";
 	status = "ok";
