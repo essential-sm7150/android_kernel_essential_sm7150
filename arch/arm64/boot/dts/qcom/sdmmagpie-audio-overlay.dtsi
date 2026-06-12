@@ -27,6 +27,28 @@
 	interrupt-names = "swr_master_irq", "swr_wake_irq";
 };
 
-&sm6150_snd {
-	qcom,model = "sm6150-wcd9375-snd-card";
+&bolero {
+	status = "disabled";
 };
+
+&qupv3_se4_spi {
+	status = "okay";
+};
+
+&slim_aud {
+	status = "okay";
+};
+
+&dai_slim {
+	status = "okay";
+};
+
+&qupv3_se4_spi {
+	status = "disabled";
+};
+
+&qupv3_se0_spi {
+	status = "okay";
+};
+
+#include "../qcom/sm6150-external-codec.dtsi"

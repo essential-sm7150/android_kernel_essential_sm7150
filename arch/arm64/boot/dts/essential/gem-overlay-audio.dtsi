@@ -1,0 +1,139 @@
+&swr0 {
+	interrupts = <0 136 0>;
+};
+
+&swr1 {
+	interrupts = <0 138 0>;
+};
+
+&swr2 {
+        qcom,swr-wakeup-required = <1>;
+        interrupts = <0 137 0>, <0 623 0>;
+};
+
+&wcd937x_codec {
+	status = "disabled";
+};
+
+&cdc_dmic01_gpios {
+	status = "disabled";
+};
+
+&cdc_dmic23_gpios {
+	status = "disabled";
+};
+
+&wsa_swr_gpios {
+	status = "disabled";
+};
+
+&rx_swr_gpios {
+	status = "disabled";
+};
+
+&tx_swr_gpios {
+	status = "disabled";
+};
+
+&wsa_spkr_en1 {
+	status = "disabled";
+};
+
+&wsa_spkr_en2 {
+	status = "disabled";
+};
+
+&wcd9xxx_intc {
+	status = "okay";
+	qcom,gpio-connect = <&tlmm 58 0>;
+};
+
+&wcd934x_rst_gpio {
+	status = "okay";
+};
+
+&wcd937x_rst_gpio {
+	status = "disabled";
+};
+
+&tavil_glink {
+	status = "okay";
+};
+
+&tavil_wdsp {
+	status = "okay";
+};
+
+&clock_audio {
+	status = "okay";
+};
+
+&wcd934x_cdc {
+	status = "okay";
+};
+
+&tavil_wcd {
+	load_switch_active: load_switch_active {
+		mux {
+			pins = "gpio1";
+		};
+
+		config {
+			pins = "gpio1";
+			output-high;
+		};
+	};
+
+	load_switch_sleep: load_switch_sleep {
+		mux {
+			pins = "gpio1";
+		};
+
+		config {
+			pins = "gpio1";
+			output-low;
+		};
+	};
+};
+
+&sm6150_snd {
+	qcom,model = "sm6150-tavil-gem-snd-card";
+	qcom,audio-routing =
+		"AIF4 VI", "MCLK",
+		"RX_BIAS", "MCLK",
+		"MADINPUT", "MCLK",
+		"DMIC0", "MIC BIAS1",
+		"MIC BIAS1", "Digital Mic0",
+		"DMIC3", "MIC BIAS3",
+		"MIC BIAS3", "Digital Mic1",
+		"SpkrLeft IN", "SPK1 OUT";
+	qcom,hph-en0-gpio;
+	qcom,hph-en1-gpio;
+	qcom,load-switch-gpio = <&tavil_load_switch>;
+	qcom,wsa-max-devs = <1>;
+	qcom,wsa-devs = <&wsa881x_11>, <&wsa881x_13>;
+	qcom,wsa-aux-dev-prefix = "SpkrLeft", "SpkrLeft";
+};
+
+&slim_aud {
+	tavil_codec {
+		tavil_load_switch: msm_cdc_pinctrl_load_switch {
+			compatible = "qcom,msm-cdc-pinctrl";
+			pinctrl-names = "aud_active", "aud_sleep";
+			pinctrl-0 = <&load_switch_active>;
+			pinctrl-1 = <&load_switch_sleep>;
+		};
+	};
+};
+
+&pm6150_rtc {
+	qcom,qpnp-rtc-write = <1>;
+};
+
+&L9C {
+	qcom,init-voltage = <3300000>;
+};
+
+&L15A {
+	qcom,init-voltage = <1800000>;
+};

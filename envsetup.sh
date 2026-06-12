@@ -23,7 +23,7 @@ function envsetup() {
 
 # Wrapper to utilise all available cores
 function m() {
-    make -j$(nproc) ARCH="$ARCH" DTC_EXT="$(command -v dtc)" LLVM=1 LLVM_IAS=1 CC="clang" "$@"
+    make -j$(nproc) ARCH="$ARCH" DTC_EXT="$(command -v dtc)" DTC_FLAGS="-q -@ -H both" LLVM=1 LLVM_IAS=1 CC="clang" "$@"
 }
 
 # Regenerate defconfig

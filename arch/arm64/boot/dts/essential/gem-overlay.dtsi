@@ -1,0 +1,12 @@
+#include "gem-overlay-audio.dtsi"
+
+// Battery
+&mtp_batterydata {
+	#include "qg-batterydata-gem-1810mah.dtsi"
+};
+
+// Camera
+/delete-node/ &led_flash_rear_aux;
+/delete-node/ &eeprom_rear_aux;
+/delete-node/ &cam_sensor_rear2_active;
+/delete-node/ &cam_sensor_rear2_suspend;
