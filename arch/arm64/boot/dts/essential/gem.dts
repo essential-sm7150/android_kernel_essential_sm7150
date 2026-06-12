@@ -1,1 +1,9 @@
 #include "../qcom/sdmmagpie.dts"
+
+&cont_splash_memory {
+	reg = <0x0 0x9c000000 0x0 0x2300000>;
+};
+
+&dfps_data_memory {
+	reg = <0x00 0x9d700000 0x00 0x100000>;
+};
