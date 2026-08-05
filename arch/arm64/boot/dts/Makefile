@@ -1,4 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0
+dtstree		:= $(srctree)/$(src)
+
+ifneq "$(wildcard $(dtstree)/essential/Makefile)" ""
+dts-dirs += essential
+else
 dts-dirs += actions
 dts-dirs += al
 dts-dirs += allwinner
@@ -24,6 +29,7 @@ dts-dirs += sprd
 dts-dirs += xilinx
 dts-dirs += lg
 dts-dirs += zte
+endif
 
 subdir-y	:= $(dts-dirs)
 
