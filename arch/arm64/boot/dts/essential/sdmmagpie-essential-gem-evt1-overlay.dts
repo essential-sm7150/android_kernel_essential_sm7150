@@ -1,0 +1,14 @@
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/clock/qcom,camcc-sdmmagpie.h>
+
+#include "sdmmagpie-essential-gem.dtsi"
+
+/ {
+	model = "Essential GEM - EVT1";
+	compatible = "qcom,sdmmagpie-qrd", "qcom,sdmmagpie", "qcom,qrd";
+	qcom,msm-id = <365 0x0>;
+	qcom,board-id = <5 1>;
+};
