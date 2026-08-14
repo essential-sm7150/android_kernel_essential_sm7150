@@ -23,6 +23,7 @@
 #include <linux/delay.h>
 #include <linux/gpio/consumer.h>
 #include <linux/regulator/consumer.h>
+#include <linux/uaccess.h>
 
 #include <dt-bindings/input/ti-drv260x.h>
 
@@ -316,6 +317,37 @@ static int drv260x_haptics_upload_effect(struct input_dev *input,
 
 		haptics->magnitude = (u32)(s8)level;
 		break;
+	case FF_PERIODIC:
+		u8 seq_data[8] = { 0 };
+
+		if (effect->u.periodic.waveform != FF_CUSTOM) {
+			dev_err(&haptics->client->dev,
+				"device can only accept FF_CUSTOM waveform\n");
+			return -EINVAL;
+		}
+
+		if (effect->u.periodic.custom_len < 0 &&
+			   effect->u.periodic.custom_len > 8) {
+			dev_err(&haptics->client->dev,
+				"invalid custom_len size (%d)\n",
+				effect->u.periodic.custom_len);
+			return -EINVAL;
+		}
+
+		if (copy_from_user(seq_data, effect->u.periodic.custom_data,
+			   effect->u.periodic.custom_len)) {
+			dev_err(&haptics->client->dev,
+				"failed to copy custom_data to seq_data\n");
+			return -EFAULT;
+		}
+
+		if (regmap_bulk_write(haptics->regmap, DRV260X_WV_SEQ_1,
+			   seq_data, effect->u.periodic.custom_len)) {
+			dev_err(&haptics->client->dev,
+				"failed to write waveform sequences\n");
+			return -EIO;
+		}
+		break;
 	default:
 		dev_err(&haptics->client->dev,
 			"Unsupported effect type: %d\n",
@@ -600,6 +632,8 @@ static int drv260x_probe(struct i2c_client *client,
 	input_set_capability(haptics->input_dev, EV_FF, FF_RUMBLE);
 	input_set_capability(haptics->input_dev, EV_FF, FF_CONSTANT);
 	input_set_capability(haptics->input_dev, EV_FF, FF_GAIN);
+	input_set_capability(haptics->input_dev, EV_FF, FF_PERIODIC);
+	input_set_capability(haptics->input_dev, EV_FF, FF_CUSTOM);
 
 	error = input_ff_create(haptics->input_dev,
 					DRV260X_FF_EFFECT_COUNT_MAX);
