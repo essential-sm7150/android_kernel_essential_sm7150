@@ -111,6 +111,11 @@ static bool disable_timeouts;
 
 static struct workqueue_struct *pil_wq;
 
+#define FIH_MEM_NV_MDM_ADDR 0xAA000000
+#define FIH_MEM_NV_MDM_SIZE 0x400000
+
+static bool fih_nv_assigned = false;
+
 /**
  * struct pil_mdt - Representation of <name>.mdt file in memory
  * @hdr: ELF32 header
@@ -1341,6 +1346,22 @@ int pil_boot(struct pil_desc *desc)
 	if (ret) {
 		pil_err(desc, "Memory setup error(rc:%d)\n", ret);
 		goto err_deinit_image;
+	}
+
+	if (!strncmp(desc->name, "modem", 5) && !fih_nv_assigned) {
+		phys_addr_t addr = FIH_MEM_NV_MDM_ADDR;
+		size_t size = FIH_MEM_NV_MDM_SIZE;
+		int srcVM[1] = {VMID_HLOS};
+		int destVM[2] = {VMID_HLOS, VMID_MSS_MSA};
+		int destVMperm[2] = {PERM_READ | PERM_WRITE, PERM_READ | PERM_WRITE};
+
+		ret = hyp_assign_phys(addr, size, srcVM, 1, destVM, destVMperm, 2);
+		if (ret) {
+			pil_err(desc, "Failed to assign %s memory, ret = %d\n",
+					desc->name, ret);
+			goto err_deinit_image;
+		}
+		fih_nv_assigned = true;
 	}
 
 	if (desc->subsys_vmid > 0) {
