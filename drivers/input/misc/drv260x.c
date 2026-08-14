@@ -173,6 +173,8 @@
 #define DRV260X_AUTOCAL_TIME_500MS		(2 << 4)
 #define DRV260X_AUTOCAL_TIME_1000MS		(3 << 4)
 
+#define DRV260X_FF_EFFECT_COUNT_MAX		16
+
 /**
  * struct drv260x_data -
  * @input_dev - Pointer to the input device
@@ -199,6 +201,7 @@ struct drv260x_data {
 	u32 library;
 	int rated_voltage;
 	int overdrive_voltage;
+	int val;
 };
 
 static const struct reg_default drv260x_reg_defs[] = {
@@ -258,6 +261,16 @@ static void drv260x_worker(struct work_struct *work)
 	struct drv260x_data *haptics = container_of(work, struct drv260x_data, work);
 	int error;
 
+	if (!haptics->val) {
+		error = regmap_write(haptics->regmap, DRV260X_MODE, DRV260X_STANDBY);
+		if (error)
+			dev_err(&haptics->client->dev,
+				"Failed to enter standby mode: %d\n",
+				error);
+		gpiod_set_value(haptics->enable_gpio, 0);
+		return;
+	}
+
 	gpiod_set_value(haptics->enable_gpio, 1);
 	/* Data sheet says to wait 250us before trying to communicate */
 	udelay(250);
@@ -276,8 +289,9 @@ static void drv260x_worker(struct work_struct *work)
 	}
 }
 
-static int drv260x_haptics_play(struct input_dev *input, void *data,
-				struct ff_effect *effect)
+static int drv260x_haptics_upload_effect(struct input_dev *input,
+					 struct ff_effect *effect,
+					 struct ff_effect *old)
 {
 	struct drv260x_data *haptics = input_get_drvdata(input);
 
@@ -290,6 +304,17 @@ static int drv260x_haptics_play(struct input_dev *input, void *data,
 	else
 		haptics->magnitude = 0;
 
+	schedule_work(&haptics->work);
+
+	return 0;
+}
+
+static int drv260x_haptics_playback(struct input_dev *input, int effect_id,
+				    int val)
+{
+	struct drv260x_data *haptics = input_get_drvdata(input);
+
+	haptics->val = val;
 	schedule_work(&haptics->work);
 
 	return 0;
@@ -471,6 +496,7 @@ static int drv260x_probe(struct i2c_client *client,
 {
 	struct device *dev = &client->dev;
 	struct drv260x_data *haptics;
+	struct ff_device *ff;
 	u32 voltage;
 	int error;
 
@@ -548,12 +574,16 @@ static int drv260x_probe(struct i2c_client *client,
 	input_set_drvdata(haptics->input_dev, haptics);
 	input_set_capability(haptics->input_dev, EV_FF, FF_RUMBLE);
 
-	error = input_ff_create_memless(haptics->input_dev, NULL,
-					drv260x_haptics_play);
+	error = input_ff_create(haptics->input_dev,
+					DRV260X_FF_EFFECT_COUNT_MAX);
 	if (error) {
 		dev_err(dev, "input_ff_create() failed: %d\n", error);
 		return error;
 	}
+
+	ff = haptics->input_dev->ff;
+	ff->upload = drv260x_haptics_upload_effect;
+	ff->playback = drv260x_haptics_playback;
 
 	INIT_WORK(&haptics->work, drv260x_worker);
 
