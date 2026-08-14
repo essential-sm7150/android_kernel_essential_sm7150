@@ -202,6 +202,7 @@ struct drv260x_data {
 	int rated_voltage;
 	int overdrive_voltage;
 	int val;
+	u16 gain;
 };
 
 static const struct reg_default drv260x_reg_defs[] = {
@@ -297,12 +298,30 @@ static int drv260x_haptics_upload_effect(struct input_dev *input,
 
 	haptics->mode = DRV260X_LRA_NO_CAL_MODE;
 
-	if (effect->u.rumble.strong_magnitude > 0)
-		haptics->magnitude = effect->u.rumble.strong_magnitude;
-	else if (effect->u.rumble.weak_magnitude > 0)
-		haptics->magnitude = effect->u.rumble.weak_magnitude;
-	else
-		haptics->magnitude = 0;
+	switch (effect->type) {
+	case FF_RUMBLE:
+		if (effect->u.rumble.strong_magnitude > 0)
+			haptics->magnitude = effect->u.rumble.strong_magnitude;
+		else if (effect->u.rumble.weak_magnitude > 0)
+			haptics->magnitude = effect->u.rumble.weak_magnitude;
+		else
+			haptics->magnitude = 0;
+		break;
+	case FF_CONSTANT:
+		s64 level;
+
+		level = (s64)effect->u.constant.level * haptics->gain;
+		level = div_s64(level, 0xFFFF);
+		level = clamp_val(level, -127, 127);
+
+		haptics->magnitude = (u32)(s8)level;
+		break;
+	default:
+		dev_err(&haptics->client->dev,
+			"Unsupported effect type: %d\n",
+			effect->type);
+		return -EINVAL;
+	}
 
 	schedule_work(&haptics->work);
 
@@ -318,6 +337,12 @@ static int drv260x_haptics_playback(struct input_dev *input, int effect_id,
 	schedule_work(&haptics->work);
 
 	return 0;
+}
+
+static void drv260x_haptics_set_gain(struct input_dev *input, u16 gain)
+{
+	struct drv260x_data *haptics = input_get_drvdata(input);
+	haptics->gain = gain;
 }
 
 static void drv260x_close(struct input_dev *input)
@@ -573,6 +598,8 @@ static int drv260x_probe(struct i2c_client *client,
 	haptics->input_dev->close = drv260x_close;
 	input_set_drvdata(haptics->input_dev, haptics);
 	input_set_capability(haptics->input_dev, EV_FF, FF_RUMBLE);
+	input_set_capability(haptics->input_dev, EV_FF, FF_CONSTANT);
+	input_set_capability(haptics->input_dev, EV_FF, FF_GAIN);
 
 	error = input_ff_create(haptics->input_dev,
 					DRV260X_FF_EFFECT_COUNT_MAX);
@@ -584,6 +611,9 @@ static int drv260x_probe(struct i2c_client *client,
 	ff = haptics->input_dev->ff;
 	ff->upload = drv260x_haptics_upload_effect;
 	ff->playback = drv260x_haptics_playback;
+	ff->set_gain = drv260x_haptics_set_gain;
+
+	haptics->gain = 0xFFFF;
 
 	INIT_WORK(&haptics->work, drv260x_worker);
 
