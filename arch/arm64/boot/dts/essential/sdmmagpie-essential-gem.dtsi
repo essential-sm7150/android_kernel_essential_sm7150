@@ -7,6 +7,8 @@
 #include "../qcom/sdmmagpie-sde-display.dtsi"
 #include "../qcom/sdmmagpie-camera-sensor-qrd.dtsi"
 
+#include "sdmmagpie-essential-gem-regulator.dtsi"
+
 &soc {
 	mtp_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <15>;
