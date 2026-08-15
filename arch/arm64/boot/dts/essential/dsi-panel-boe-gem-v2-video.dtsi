@@ -1,0 +1,63 @@
+&mdss_mdp {
+	dsi_single_boe_gem_v2_video: boe,mdss_dsi_single_boe_gem_v2_video {
+		qcom,mdss-dsi-panel-name = "BOE panel for GEM HW - EVT2";
+		qcom,mdss-dsi-panel-type = "dsi_video_mode";
+		qcom,mdss-dsi-virtual-channel-id = <0>;
+		qcom,mdss-dsi-stream = <0>;
+		qcom,mdss-dsi-bpp = <24>;
+		qcom,mdss-dsi-underflow-color = <0xff>;
+		qcom,mdss-dsi-border-color = <0>;
+		qcom,mdss-dsi-traffic-mode = "burst_mode";
+		qcom,mdss-dsi-reset-sequence = <1 20>, <0 20>, <1 20>;
+		qcom,mdss-dsi-dma-trigger = "trigger_sw";
+		qcom,mdss-dsi-mdp-trigger = "none";
+		qcom,mdss-dsi-lane-0-state;
+		qcom,mdss-dsi-lane-1-state;
+		qcom,mdss-dsi-lane-2-state;
+		qcom,mdss-dsi-lane-3-state;
+		qcom,mdss-dsi-bllp-eof-power-mode;
+		qcom,mdss-dsi-bllp-power-mode;
+		qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+		qcom,platform-reset-gpio = <&pm6150l_gpios 9 GPIO_ACTIVE_HIGH>;
+		qcom,mdss-dsi-bl-min-level = <1>;
+		qcom,mdss-dsi-bl-max-level = <4095>;
+		qcom,mdss-dsi-bl-swap-byte;
+		qcom,panel-supply-entries = <&dsi_panel_pwr_boe>;
+		qcom,mdss-pan-physical-width-dimension = <132>;
+		qcom,mdss-pan-physical-height-dimension = <34>;
+		qcom,mdss-dsi-hs-pps;
+		qcom,suspend-ulps-enabled;
+		qcom,mdss-dsi-panel-hdr-enabled;
+		qcom,mdss-dsi-panel-hdr-color-primaries = <15000 16500 34000 16000 13500 35000 7000 2500>;
+		qcom,mdss-dsi-panel-peak-brightness = <4200000>;
+		qcom,mdss-dsi-panel-blackness-level = <3230>;
+		qcom,mdss-dsi-tx-eot-append;
+
+		qcom,mdss-dsi-display-timings {
+			timing@0 {
+				qcom,mdss-dsi-panel-width = <2160>;
+				qcom,mdss-dsi-panel-height = <560>;
+				qcom,mdss-dsi-h-front-porch = <120>;
+				qcom,mdss-dsi-h-back-porch = <88>;
+				qcom,mdss-dsi-h-pulse-width = <8>;
+				qcom,mdss-dsi-h-sync-skew = <0>;
+				qcom,mdss-dsi-v-front-porch = <650>;
+				qcom,mdss-dsi-v-back-porch = <7>;
+				qcom,mdss-dsi-v-pulse-width = <1>;
+				qcom,mdss-dsi-panel-framerate = <90>;
+				qcom,mdss-dsi-on-command = [29 01 00 00 00 00 02 b0 04 29 01 00 00 00 00 03 df 10 40 29 01 00 00 00 00 06 f3 50 00 00 00 00 29 01 00 00 14 00 02 f2 11 29 01 00 00 00 00 06 f3 01 00 00 00 01 29 01 00 00 00 00 03 f4 00 02 29 01 00 00 14 00 02 f2 19 29 01 00 00 78 00 03 df 10 42 29 01 00 00 00 00 02 b0 80 29 01 00 00 00 00 02 e6 00 29 01 00 00 00 00 02 b0 00 29 01 00 00 00 00 02 b6 50 29 01 00 00 00 00 03 eb 8b 00 29 01 00 00 00 00 02 fa 0a 29 01 00 00 00 00 02 f7 01 29 01 00 00 00 00 02 b0 80 29 01 00 00 00 00 9f d1 03 00 00 00 00 00 00 00 00 d0 07 00 00 00 00 00 00 00 d1 07 00 d8 07 00 ff 07 00 ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff ff f7 ff 00 00 00 00 00 29 01 00 00 00 00 75 d2 1b 00 00 00 00 00 2c 01 00 04 41 10 04 41 10 04 41 10 0a 85 42 a1 50 28 14 0a 85 42 d1 02 00 03 00 00 00 00 00 00 00 10 02 00 21 84 00 40 08 21 84 00 40 08 21 00 00 00 00 00 00 00 00 00 21 84 00 40 08 21 00 00 21 84 00 40 08 21 00 00 00 00 00 00 00 00 00 21 84 00 40 08 21 00 00 01 04 00 40 00 01 00 00 00 00 00 00 00 00 00 01 04 00 40 00 01 00 00 05 01 00 00 78 00 01 11 05 01 00 00 00 00 01 29];
+				qcom,mdss-dsi-off-command = [05 01 00 00 00 00 01 28 05 01 00 00 96 00 01 10];
+				qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
+				qcom,mdss-dsi-off-command-state = "dsi_hs_mode";
+				qcom,mdss-dsi-h-sync-pulse = <0>;
+				qcom,compression-mode = "dsc";
+				qcom,mdss-dsc-slice-height = <16>;
+				qcom,mdss-dsc-slice-width = <1080>;
+				qcom,mdss-dsc-slice-per-pkt = <2>;
+				qcom,mdss-dsc-bit-per-component = <8>;
+				qcom,mdss-dsc-bit-per-pixel = <8>;
+				qcom,mdss-dsc-block-prediction-enable;
+			};
+		};
+	};
+};
