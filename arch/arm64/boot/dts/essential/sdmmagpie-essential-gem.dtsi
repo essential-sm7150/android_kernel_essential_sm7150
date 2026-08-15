@@ -276,3 +276,7 @@
 	qcom,aux-sel-gpio = <&tlmm 30 0>;
 	qcom,dp-gpio-aux-switch;
 };
+
+&pm6150_rtc {
+	qcom,qpnp-rtc-write = <1>;
+};
