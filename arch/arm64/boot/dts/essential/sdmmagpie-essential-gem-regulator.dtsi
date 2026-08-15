@@ -1,0 +1,19 @@
+/* audio */
+&L15A {
+	qcom,init-voltage = <1800000>;
+};
+
+/* camera */
+&pm8009_l2 {
+	regulator-min-microvolt = <1192000>;
+	regulator-max-microvolt = <1192000>;
+};
+
+/* ??? */
+&pm6150l_l6 {
+	qcom,init-voltage = <3000000>;
+};
+
+&pm6150l_l9 {
+	qcom,init-voltage = <3300000>;
+};
