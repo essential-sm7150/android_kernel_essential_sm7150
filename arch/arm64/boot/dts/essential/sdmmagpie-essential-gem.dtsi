@@ -8,6 +8,7 @@
 #include "../qcom/sdmmagpie-camera-sensor-qrd.dtsi"
 
 #include "sdmmagpie-essential-gem-display.dtsi"
+#include "sdmmagpie-essential-gem-haptics.dtsi"
 #include "sdmmagpie-essential-gem-regulator.dtsi"
 #include "sdmmagpie-essential-gem-reserved-memory.dtsi"
 
