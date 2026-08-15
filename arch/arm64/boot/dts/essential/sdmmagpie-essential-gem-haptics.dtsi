@@ -11,3 +11,7 @@
 		vib-overdrive-mv = <3740>;
 	};
 };
+
+&pm6150_vib {
+	status = "disabled";
+};
