@@ -7,6 +7,7 @@
 #include "../qcom/sdmmagpie-sde-display.dtsi"
 #include "../qcom/sdmmagpie-camera-sensor-qrd.dtsi"
 
+#include "sdmmagpie-essential-gem-display.dtsi"
 #include "sdmmagpie-essential-gem-regulator.dtsi"
 #include "sdmmagpie-essential-gem-reserved-memory.dtsi"
 
@@ -251,6 +252,6 @@
 	pinctrl-0 = <&sde_dp_aux_active &sde_dp_usbplug_cc_active>;
 	pinctrl-1 = <&sde_dp_aux_suspend &sde_dp_usbplug_cc_suspend>;
 	qcom,aux-en-gpio = <&tlmm 42 0>;
-	qcom,aux-sel-gpio = <&tlmm 33 0>;
+	qcom,aux-sel-gpio = <&tlmm 30 0>;
 	qcom,dp-gpio-aux-switch;
 };
