@@ -1,0 +1,13 @@
+&qupv3_se9_i2c {
+	status = "ok";
+
+	haptics@5a {
+		compatible = "ti,drv2605";
+		reg = <0x5a>;
+		enable-gpio = <&tlmm 67 0>;
+		mode = <1>;
+		library-sel = <6>;
+		vib-rated-mv = <3740>;
+		vib-overdrive-mv = <3740>;
+	};
+};
