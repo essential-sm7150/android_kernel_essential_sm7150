@@ -1,0 +1,27 @@
+&reserved_memory {
+	ramoops@0xad000000 {
+		compatible = "ramoops";
+		reg = <0x00 0xad000000 0x00 0x200000>;
+		record-size = <0x20000>;
+		console-size = <0x100000>;
+		pmsg-size = <0x80000>;
+	};
+
+	fih_nv@AA000000 {
+		compatible = "removed-dma-pool";
+		no-map;
+		reg = <0x00 0xaa000000 0x00 0x400000>;
+	};
+};
+
+&secure_display_memory {
+	size = <0x00 0x5c00000>;
+};
+
+&cont_splash_memory {
+	reg = <0x00 0x9c000000 0x00 0x2300000>;
+};
+
+&dfps_data_memory {
+	reg = <0x00 0x9e300000 0x00 0x100000>;
+};
