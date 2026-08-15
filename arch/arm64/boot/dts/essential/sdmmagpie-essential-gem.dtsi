@@ -13,6 +13,7 @@
 &soc {
 	mtp_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <15>;
+		#include "qg-batterydata-gem-1810mah.dtsi"
 	};
 };
 
