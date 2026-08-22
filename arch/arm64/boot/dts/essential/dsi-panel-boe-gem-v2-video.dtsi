@@ -19,9 +19,9 @@
 		qcom,mdss-dsi-bllp-power-mode;
 		qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
 		qcom,platform-reset-gpio = <&pm6150l_gpios 9 GPIO_ACTIVE_HIGH>;
-		qcom,mdss-dsi-bl-min-level = <1>;
-		qcom,mdss-dsi-bl-max-level = <4095>;
-		qcom,mdss-dsi-bl-swap-byte;
+		qcom,mdss-dsi-bl-min-level = <10>;
+		qcom,mdss-dsi-bl-max-level = <3675>;
+		qcom,mdss-dsi-bl-inverted-dbv;
 		qcom,panel-supply-entries = <&dsi_panel_pwr_boe>;
 		qcom,mdss-pan-physical-width-dimension = <132>;
 		qcom,mdss-pan-physical-height-dimension = <34>;
