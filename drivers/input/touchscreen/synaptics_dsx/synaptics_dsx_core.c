@@ -881,13 +881,11 @@ static ssize_t synaptics_rmi4_wake_gesture_show(struct device *dev,
 static ssize_t synaptics_rmi4_wake_gesture_store(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
 {
-	unsigned int input;
+	bool input;
 	struct synaptics_rmi4_data *rmi4_data = dev_get_drvdata(dev);
 
-	if (kstrtouint(buf, 10, &input) != 1)
+	if (kstrtobool(buf, &input))
 		return -EINVAL;
-
-	input = input > 0 ? 1 : 0;
 
 	if (rmi4_data->f11_wakeup_gesture || rmi4_data->f12_wakeup_gesture)
 		rmi4_data->enable_wakeup_gesture = input;
