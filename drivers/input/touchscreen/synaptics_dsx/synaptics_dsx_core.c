@@ -41,6 +41,7 @@
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
 #include <linux/input/synaptics_dsx.h>
+#include <linux/proc_fs.h>
 #include "synaptics_dsx_core.h"
 #ifdef KERNEL_ABOVE_2_6_38
 #include <linux/input/mt.h>
@@ -4316,6 +4317,32 @@ err_drm_reg:
 	return retval;
 }
 
+static int synaptics_create_gesture_procfs(struct synaptics_rmi4_data *rmi4_data)
+{
+	char gesture_node[256];
+	const char *path;
+	struct proc_dir_entry *entry;
+
+	path = kobject_get_path(&rmi4_data->input_dev->dev.kobj, GFP_KERNEL);
+	if (!path) {
+		dev_err(rmi4_data->pdev->dev.parent, "failed to get kobj path\n");
+		return -ENOMEM;
+	}
+
+	snprintf(gesture_node, sizeof(gesture_node), "/sys%s/wake_gesture",
+		 path);
+
+	entry = proc_symlink("wake_gesture", NULL, gesture_node);
+	if (!entry) {
+		dev_err(rmi4_data->pdev->dev.parent, "failed to create proc symlink\n");
+		kfree(path);
+		return -ENOMEM;
+	}
+
+	kfree(path);
+	return 0;
+}
+
 static void synaptics_rmi4_defer_probe(struct work_struct *work)
 {
 	int retval;
@@ -4450,6 +4477,8 @@ static void synaptics_rmi4_defer_probe(struct work_struct *work)
 			goto err_sysfs;
 		}
 	}
+
+	synaptics_create_gesture_procfs(rmi4_data);
 
 #ifdef USE_DATA_SERVER
 	memset(&interrupt_signal, 0, sizeof(interrupt_signal));
