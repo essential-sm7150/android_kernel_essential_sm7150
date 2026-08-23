@@ -3295,10 +3295,12 @@ flash_prog_mode:
 		}
 	}
 
+#if WAKEUP_GESTURE
 	if (rmi4_data->f11_wakeup_gesture || rmi4_data->f12_wakeup_gesture)
 		rmi4_data->enable_wakeup_gesture = WAKEUP_GESTURE;
 	else
 		rmi4_data->enable_wakeup_gesture = false;
+#endif
 
 	synaptics_rmi4_set_configured(rmi4_data);
 
