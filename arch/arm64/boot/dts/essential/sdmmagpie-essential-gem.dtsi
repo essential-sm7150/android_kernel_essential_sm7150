@@ -2,11 +2,13 @@
 #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
 #include <dt-bindings/iio/qcom,spmi-vadc.h>
 #include <dt-bindings/input/input.h>
-#include "../qcom/sdmmagpie-audio-overlay.dtsi"
+#include "../qcom/sdmmagpie-ext-codec-audio-overlay.dtsi"
+#include "../qcom/sdmmagpie-external-codec.dtsi"
 #include "../qcom/sdmmagpie-thermal-overlay.dtsi"
 #include "../qcom/sdmmagpie-sde-display.dtsi"
 #include "../qcom/sdmmagpie-camera-sensor-qrd.dtsi"
 
+#include "sdmmagpie-essential-gem-audio.dtsi"
 #include "sdmmagpie-essential-gem-display.dtsi"
 #include "sdmmagpie-essential-gem-haptics.dtsi"
 #include "sdmmagpie-essential-gem-regulator.dtsi"

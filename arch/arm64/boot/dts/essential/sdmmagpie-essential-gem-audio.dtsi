@@ -1,0 +1,18 @@
+&sm6150_snd {
+	qcom,model = "sm6150-tavil-gem-snd-card";
+	qcom,audio-routing =
+		"AIF4 VI", "MCLK",
+		"RX_BIAS", "MCLK",
+		"MADINPUT", "MCLK",
+		"DMIC0", "MIC BIAS1",
+		"MIC BIAS1", "Digital Mic0",
+		"DMIC3", "MIC BIAS3",
+		"MIC BIAS3", "Digital Mic1",
+		"SpkrLeft IN", "SPK1 OUT";
+	qcom,hph-en0-gpio;
+	qcom,hph-en1-gpio;
+	qcom,load-switch-gpio = <&tavil_us_euro_switch>;
+	qcom,wsa-max-devs = <1>;
+	qcom,wsa-devs = <&wsa881x_11>, <&wsa881x_13>;
+	qcom,wsa-aux-dev-prefix = "SpkrLeft", "SpkrLeft";
+};
