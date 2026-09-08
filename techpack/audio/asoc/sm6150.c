@@ -214,6 +214,7 @@ struct msm_asoc_mach_data {
 	int usbc_en2_gpio; /* used by gpio driver API */
 	int hph_en1_gpio;
 	int hph_en0_gpio;
+	int load_switch_gpio;
 	struct device_node *mi2s_gpio_p[MI2S_MAX]; /* used by pinctrl API */
 	struct device_node *dmic01_gpio_p; /* used by pinctrl API */
 	struct device_node *dmic23_gpio_p; /* used by pinctrl API */
@@ -221,6 +222,7 @@ struct msm_asoc_mach_data {
 	struct pinctrl *usbc_en2_gpio_p; /* used by pinctrl API */
 	struct device_node *hph_en1_gpio_p; /* used by pinctrl API */
 	struct device_node *hph_en0_gpio_p; /* used by pinctrl API */
+	struct device_node *load_switch_gpio_p; /* used by pinctrl API */
 	bool is_afe_config_done;
 	struct device_node *fsa_handle;
 };
@@ -3923,13 +3925,19 @@ static int msm_mclk_event(struct snd_soc_dapm_widget *w,
 				 struct snd_kcontrol *kcontrol, int event)
 {
 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+	struct snd_soc_card *card = codec->component.card;
+	struct msm_asoc_mach_data *pdata = snd_soc_card_get_drvdata(card);
 
 	pr_debug("%s: event = %d\n", __func__, event);
 
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
+		if (pdata && pdata->load_switch_gpio_p)
+			msm_cdc_pinctrl_select_active_state(pdata->load_switch_gpio_p);
 		return msm_snd_enable_codec_ext_clk(codec, 1, true);
 	case SND_SOC_DAPM_POST_PMD:
+		if (pdata && pdata->load_switch_gpio_p)
+			msm_cdc_pinctrl_select_sleep_state(pdata->load_switch_gpio_p);
 		return msm_snd_enable_codec_ext_clk(codec, 0, true);
 	}
 	return 0;
@@ -9035,9 +9043,21 @@ static int msm_ext_prepare_hifi(struct msm_asoc_mach_data *pdata)
 		pr_debug("%s: hph_en0_gpio request %d\n", __func__,
 			pdata->hph_en0_gpio);
 		ret = gpio_request(pdata->hph_en0_gpio, "hph_en0_gpio");
-		if (ret)
+		if (ret) {
 			pr_err("%s: hph_en0_gpio request failed, ret:%d\n",
 				__func__, ret);
+			goto err;
+		}
+	}
+	if (gpio_is_valid(pdata->load_switch_gpio)) {
+		pr_debug("%s: load_switch_gpio request %d\n", __func__,
+			pdata->load_switch_gpio);
+		ret = gpio_request(pdata->load_switch_gpio, "load_switch_gpio");
+		if (ret) {
+			pr_err("%s: load_switch_gpio request failed, ret:%d\n",
+				__func__, ret);
+			goto err;
+		}
 	}
 
 err:
@@ -9163,6 +9183,16 @@ static int msm_asoc_machine_probe(struct platform_device *pdev)
 	if (!gpio_is_valid(pdata->hph_en0_gpio) && (!pdata->hph_en0_gpio_p)) {
 		dev_dbg(&pdev->dev, "property %s not detected in node %s",
 			"qcom,hph-en0-gpio", pdev->dev.of_node->full_name);
+	}
+
+	pdata->load_switch_gpio = of_get_named_gpio(pdev->dev.of_node,
+						"qcom,load-switch-gpio", 0);
+	if (!gpio_is_valid(pdata->load_switch_gpio))
+		pdata->load_switch_gpio_p = of_parse_phandle(pdev->dev.of_node,
+					"qcom,load-switch-gpio", 0);
+	if (!gpio_is_valid(pdata->load_switch_gpio) && (!pdata->load_switch_gpio_p)) {
+		dev_dbg(&pdev->dev, "property %s not detected in node %s",
+			"qcom,load-switch-gpio", pdev->dev.of_node->full_name);
 	}
 
 	ret = msm_ext_prepare_hifi(pdata);
