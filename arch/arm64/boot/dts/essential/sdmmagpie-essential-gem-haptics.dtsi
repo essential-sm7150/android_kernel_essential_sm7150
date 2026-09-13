@@ -1,6 +1,4 @@
 &qupv3_se9_i2c {
-	status = "ok";
-
 	haptics@5a {
 		compatible = "ti,drv2605";
 		reg = <0x5a>;
