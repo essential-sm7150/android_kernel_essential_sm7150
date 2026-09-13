@@ -1,0 +1,55 @@
+&qupv3_se7_i2c {
+	sx9310@28 {
+		compatible = "semtech,sx9310";
+		reg = <0x28>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&sar_top_int>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <57 0x2008>;
+		vdd-supply = <&pm6150l_l6>;
+	};
+};
+
+&qupv3_se9_i2c {
+	sx9310@28 {
+		compatible = "semtech,sx9310";
+		reg = <0x28>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&sar_bottom_int>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <64 0x2008>;
+		vdd-supply = <&pm6150l_l6>;
+	};
+};
+
+&tlmm {
+	sar-bottom {
+		sar_bottom_int: sar-bottom-int {
+			mux {
+				pins = "gpio64";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio64";
+				drive-strength = <0x02>;
+				bias-pull-up;
+			};
+		};
+	};
+
+	sar-top {
+		sar_top_int: sar-top-int {
+			mux {
+				pins = "gpio57";
+				function = "gpio";
+			};
+
+			config {
+				pins = "gpio57";
+				drive-strength = <0x02>;
+				bias-pull-up;
+			};
+		};
+	};
+};
