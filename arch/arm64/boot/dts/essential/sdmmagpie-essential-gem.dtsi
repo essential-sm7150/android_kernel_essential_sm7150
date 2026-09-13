@@ -14,6 +14,7 @@
 #include "sdmmagpie-essential-gem-haptics.dtsi"
 #include "sdmmagpie-essential-gem-regulator.dtsi"
 #include "sdmmagpie-essential-gem-reserved-memory.dtsi"
+#include "sdmmagpie-essential-gem-sensors.dtsi"
 
 &soc {
 	mtp_batterydata: qcom,battery-data {
@@ -56,6 +57,10 @@
 		synaptics,reset-on-state = <0>;
 		synaptics,reset-active-ms = <20>;
 	};
+};
+
+&qupv3_se9_i2c {
+	status = "ok";
 };
 
 &tlmm {
