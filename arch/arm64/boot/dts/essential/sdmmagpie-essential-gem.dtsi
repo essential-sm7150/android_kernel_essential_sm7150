@@ -136,13 +136,13 @@
 	status = "ok";
 	qcom,clk-freq-out = <1000000>;
 	nq@2a {
-		compatible = "qcom,nq-nci";
+		compatible = "qcom,sn-nci";
 		reg = <0x2a>;
-		qcom,nq-irq = <&tlmm 37 0x00>;
-		qcom,nq-ven = <&tlmm 12 0x00>;
-		qcom,nq-firm = <&tlmm 36 0x00>;
-		qcom,nq-clkreq = <&tlmm 31 0x00>;
-		qcom,nq-esepwr = <&tlmm 94 0x00>;
+		qcom,sn-irq = <&tlmm 37 0x00>;
+		qcom,sn-ven = <&tlmm 12 0x00>;
+		qcom,sn-firm = <&tlmm 36 0x00>;
+		qcom,sn-clkreq = <&tlmm 31 0x00>;
+		qcom,sn-esepwr = <&tlmm 94 0x00>;
 		interrupt-parent = <&tlmm>;
 		interrupts = <37 0>;
 		interrupt-names = "nfc_irq";
